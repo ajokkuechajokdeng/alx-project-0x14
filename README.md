@@ -1,79 +1,65 @@
-# Movies Database API
+# CineSeek: Movie Database API Overview
 
-This project provides API documentation for accessing movie data from the Movies Database API. Below are examples for making requests, handling responses, and addressing common errors.
+## API Overview
 
-## API Endpoints
+The MoviesDatabase API provides access to a comprehensive dataset of movie titles, images, release years, and genres. It allows filtering by genre, year, and pagination for effective browsing.
 
-### Request Example
+## Version
 
-**Search for a movie:**
+v2
+
+## Available Endpoints
+
+- `GET /titles` — Fetches movie titles with optional filtering
+- `GET /titles/{id}` — Get details for a single movie
+- `GET /genres` — Returns list of available genres
+- `GET /languages` — Returns list of available languages
+
+## Request and Response Format
+
+### Sample Request
 
 ```bash
-GET https://api.moviesdatabase.com/v1/movies/search?query=The+Matrix
+POST /titles
 Headers:
-  Authorization: Bearer YOUR_API_KEY
-  Content-Type: application/json
+  - x-rapidapi-host: moviesdatabase.p.rapidapi.com
+  - x-rapidapi-key: <API_KEY>
+Sample Response:
 ```
-
-### Response Example
-
-**Search Results:**  
 
 ```json
 {
   "results": [
     {
-      "id": "10001",
-      "title": "The Matrix",
-      "release_date": "1999-03-31",
-      "genres": ["Action", "Sci-Fi"],
-      "overview": "A computer hacker learns about the true nature of his reality."
+      "id": "tt123456",
+      "titleText": { "text": "Inception" },
+      "releaseYear": { "year": 2010 },
+      "primaryImage": { "url": "https://..." }
     }
   ]
 }
 ```
 
-### Authentication
+## Authentication
 
-To use the API, you need an API key for authentication. Add the key to your request headers:
+You need a RapidAPI key.
 
-```bash
-Authorization: Bearer YOUR_API_KEY
+```ts
+Required header: x-rapidapi-key
 ```
 
-### Error Handling
+Must be passed with every request
 
-**Common Errors**  
-| Status Code | Meaning                        | Solution                                      |
-|-------------|--------------------------------|-----------------------------------------------|
-| 400         | Bad Request                   | Invalid request parameters. Check your query syntax and required fields. |
-| 401         | Unauthorized                  | Missing or invalid API key. Verify and include the correct API key. |
-| 404         | Not Found                     | Resource does not exist. Check the endpoint or ID being requested. |
-| 500         | Internal Server Error         | Server issue. Retry the request later or contact support. |
+## Error Handling
 
-**Example Error Handling Code:**
+401 Unauthorized – Missing/invalid API key
+429 Too Many Requests – Rate limit exceeded
+500 Server Error – Something’s broken, not your fault
 
-```javascript
-fetch('https://api.moviesdatabase.com/v1/movies/invalid-id', {
-  headers: { Authorization: 'Bearer YOUR_API_KEY' }
-})
-  .then(response => {
-    if (!response.ok) {
-      console.error(`Error: ${response.status} - ${response.statusText}`);
-      return null;
-    }
-    return response.json();
-  })
-  .catch(err => console.error('Network error:', err));
-```
+## Usage Limits and Best Practices
 
-### Usage Limits and Recommendations
+Limited to 500 requests/month on free tie
+Use pagination (page param)
+Cache frequent requests if possible
 
-**Limits**
-- Free Tier: 1000 requests/day.
-- Rate Limit: Up to 10 requests/second.
-
-**Best Practices**
-- Use caching to minimize redundant requests for frequently accessed data.
-- Implement retry logic for transient errors like 500 Internal Server Error.
-- Log errors and monitor response times for better debugging and optimization.
+---
